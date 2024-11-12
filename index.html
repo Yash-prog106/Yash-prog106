@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Cricket Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        button {
+            font-size: 16px;
+            padding: 10px;
+        }
+        .score {
+            margin-top: 20px;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Cricket Game</h1>
+    <p>Press a number between 0 and 6 for each ball.</p>
+
+    <div>
+        <button onclick="playBall(0)">0</button>
+        <button onclick="playBall(1)">1</button>
+        <button onclick="playBall(2)">2</button>
+        <button onclick="playBall(3)">3</button>
+        <button onclick="playBall(4)">4</button>
+        <button onclick="playBall(5)">5</button>
+        <button onclick="playBall(6)">6</button>
+    </div>
+
+    <div class="score">
+        <p id="status">Player's turn to bat!</p>
+        <p id="playerScore">Player Score: 0</p>
+        <p id="computerScore">Computer Score: 0</p>
+    </div>
+
+    <script>
+        let playerScore = 0;
+        let computerScore = 0;
+        let balls = 6;
+        let playerTurn = true;
+
+        function getRandomRun() {
+            return Math.floor(Math.random() * 7); // Random number between 0 and 6
+        }
+
+        function playBall(playerRun) {
+            if (balls <= 0) return; // Game over, no more balls to play
+
+            if (playerTurn) {
+                // Player batting
+                let computerBowl = getRandomRun();
+                if (playerRun === computerBowl) {
+                    document.getElementById("status").innerText = "Player is Out!";
+                    playerTurn = false;
+                } else {
+                    playerScore += playerRun;
+                    document.getElementById("playerScore").innerText = `Player Score: ${playerScore}`;
+                }
+            } else {
+                // Computer batting
+                let computerRun = getRandomRun();
+                let playerBowl = playerRun; // Player bowls based on button clicked
+
+                if (computerRun === playerBowl) {
+                    document.getElementById("status").innerText = "Computer is Out!";
+                    endGame();
+                    return;
+                } else {
+                    computerScore += computerRun;
+                    document.getElementById("computerScore").innerText = `Computer Score: ${computerScore}`;
+                    if (computerScore > playerScore) {
+                        document.getElementById("status").innerText = "Computer wins!";
+                        endGame();
+                        return;
+                    }
+                }
+            }
+
+            balls--;
+            if (balls === 0 && playerTurn) {
+                playerTurn = false;
+                balls = 6;
+                document.getElementById("status").innerText = "Computer's turn to bat!";
+            } else if (balls === 0 && !playerTurn) {
+                endGame();
+            }
+        }
+
+        function endGame() {
+            if (playerScore > computerScore) {
+                document.getElementById("status").innerText = "Player wins!";
+            } else if (computerScore > playerScore) {
+                document.getElementById("status").innerText = "Computer wins!";
+            } else {
+                document.getElementById("status").innerText = "It's a tie!";
+            }
+        }
+    </script>
+</body>
+</html>
